@@ -87,6 +87,12 @@ open class TagView: UIButton {
         }
     }
     
+    open var needScaleAnimate: Bool = false
+
+    open var shrinkingScale: CGFloat = 0.9
+
+    open var expandingScale: CGFloat = 1.3
+    
     private func reloadStyles() {
         if isHighlighted {
             if let highlightedBackgroundColor = highlightedBackgroundColor {
@@ -173,6 +179,13 @@ open class TagView: UIButton {
         frame.size = intrinsicContentSize
         addSubview(removeButton)
         removeButton.tagView = self
+
+        self.addTarget(self, action: #selector(self.didTouchDown)        , for: .touchDown)
+        self.addTarget(self, action: #selector(self.didTouchDragOutside) , for: .touchDragOutside)
+        self.addTarget(self, action: #selector(self.didTouchDragOutside) , for: .touchCancel)
+        self.addTarget(self, action: #selector(self.didTouchDown)        , for: .touchDragEnter)
+        self.addTarget(self, action: #selector(self.didTouchUpInside)    , for: .touchUpInside)
+        self.addTarget(self, action: #selector(self.didTouchUpInside)    , for: .touchUpOutside)
         
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(self.longPress))
         self.addGestureRecognizer(longPress)
@@ -214,6 +227,57 @@ open class TagView: UIButton {
             removeButton.frame.size.height = self.frame.height
             removeButton.frame.origin.y = 0
         }
+    }
+    
+    @objc private func didTouchDown(_ sender: TagView) {
+        guard needScaleAnimate else {
+            return
+        }
+        
+        UIView.animate(
+            withDuration: 0.1,
+            animations: {
+                sender.alpha = 0.6
+                sender.transform = sender.transform.scaledBy(x: self.shrinkingScale, y: self.shrinkingScale)
+        })
+    }
+    
+    @objc private func didTouchDragOutside(_ sender: TagView) {
+        guard needScaleAnimate else {
+            return
+        }
+        
+        UIView.animate(
+            withDuration: 0.1,
+            animations: {
+                sender.alpha = 1.0
+                sender.transform = .identity
+        })
+    }
+    
+    @objc private func didTouchUpInside(_ sender: TagView) {
+        onTap?(self)
+
+        guard needScaleAnimate else {
+            return
+        }
+        
+        UIView.animate(
+            withDuration: 0.1,
+            delay: 0,
+            options: .curveEaseIn,
+            animations: {
+                sender.alpha     = 1.0
+                sender.transform = sender.transform.scaledBy(x: self.expandingScale, y: self.expandingScale)
+        },  completion: { _ in
+            UIView.animate(
+                withDuration: 0.2,
+                delay: 0,
+                options: .curveEaseInOut,
+                animations: {
+                    sender.transform = .identity
+            },  completion: nil)
+        })
     }
 }
 

@@ -188,6 +188,30 @@ open class TagListView: UIView {
         }
     }
     
+    open var needScaleAnimate: Bool = false {
+        didSet {
+            tagViews.forEach {
+                $0.needScaleAnimate = needScaleAnimate
+            }
+        }
+    }
+
+    open var shrinkingScale: CGFloat? {
+        didSet {
+            tagViews.forEach {
+                $0.shrinkingScale = shrinkingScale!
+            }
+        }
+    }
+
+    open var expandingScale: CGFloat? {
+        didSet {
+            tagViews.forEach {
+                $0.expandingScale = expandingScale!
+            }
+        }
+    }
+    
     /// The desired (maximum) width of the whole view. This needs to be set in cases where
     /// the `intrinsicContentSize` should to be calculated before or without the view being
     /// previously layouted. For example when using `systemLayoutSizeFitting:`.
@@ -372,7 +396,6 @@ open class TagListView: UIView {
     open func insertTag(_ title: String, at index: Int) -> TagView {
         return insertTagView(createNewTagView(title), at: index)
     }
-    
 
     @discardableResult
     open func insertTagView(_ tagView: TagView, at index: Int) -> TagView {
@@ -419,7 +442,6 @@ open class TagListView: UIView {
     // MARK: - Events
     
     @objc func tagPressed(_ sender: TagView!) {
-        sender.onTap?(sender)
         delegate?.tagPressed?(sender.currentTitle ?? "", tagView: sender, sender: self)
     }
     
