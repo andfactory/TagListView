@@ -185,7 +185,7 @@ open class TagView: UIButton {
         self.addTarget(self, action: #selector(self.didTouchDragOutside) , for: .touchCancel)
         self.addTarget(self, action: #selector(self.didTouchDown)        , for: .touchDragEnter)
         self.addTarget(self, action: #selector(self.didTouchUpInside)    , for: .touchUpInside)
-        self.addTarget(self, action: #selector(self.didTouchUpInside)    , for: .touchUpOutside)
+        self.addTarget(self, action: #selector(self.didTouchDragOutside)    , for: .touchUpOutside)
         
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(self.longPress))
         self.addGestureRecognizer(longPress)
