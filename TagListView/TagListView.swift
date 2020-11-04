@@ -196,18 +196,18 @@ open class TagListView: UIView {
         }
     }
 
-    open var shrinkingScale: CGFloat? {
+    open var shrinkingScale: CGFloat = 0.9 {
         didSet {
             tagViews.forEach {
-                $0.shrinkingScale = shrinkingScale!
+                $0.shrinkingScale = shrinkingScale
             }
         }
     }
 
-    open var expandingScale: CGFloat? {
+    open var expandingScale: CGFloat = 1.3 {
         didSet {
             tagViews.forEach {
-                $0.expandingScale = expandingScale!
+                $0.expandingScale = expandingScale
             }
         }
     }
